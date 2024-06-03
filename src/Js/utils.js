@@ -23,7 +23,7 @@ export const validateUser = object({
     .email("Please enter a valid email")
     .required("No Email provided")
     .label("Email"),
-  userName: string()
+  username: string()
     .required("No user Name provided")
     .label("Username")
     .min(8, "username is too short , it should be 8 chars  minimum"),

@@ -25,21 +25,24 @@ registerForm.addEventListener("submit", async (e) => {
     return;
   }
   console.log("all valid");
+  submit(formData);
 });
 
-function submit(data) {
+function submit(formData) {
   fetch(urlPrefix + "/register", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: formData,
   })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error, status = " + response.status);
+      }
+      return response.text();
     })
-    .catch((err) => {
-      console.error("There has been a problem with your fetch operation:", err);
+    .then(async (data) => {
+      console.log("Data sent:");
+    })
+    .catch((error) => {
+      console.error("Something went wrong when sending data:", error);
     });
 }
