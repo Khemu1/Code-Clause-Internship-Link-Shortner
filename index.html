@@ -16,17 +16,20 @@
     <div class="container">
       <form method="POST" class="register" enctype="multipart/form-data">
         <h2>Register</h2>
-        <div>
+        <div class="email">
           <label for="email">Email</label>
           <input type="text" name="email" id="email" />
+          <small class="error email">error</small>
         </div>
-        <div>
+        <div class="username">
           <label for="username">Username</label>
           <input type="text" name="username" id="username" />
+          <small class="error username">username</small>
         </div>
-        <div>
+        <div class="password">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" />
+          <small class="error username">password</small>
         </div>
         <button type="submit">Register</button>
         <small><a href="">Already have an account ?</a></small>
