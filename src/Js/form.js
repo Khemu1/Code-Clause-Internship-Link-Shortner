@@ -24,14 +24,14 @@ registerForm.addEventListener("submit", async (e) => {
     console.log("i do have errors", errors);
     return;
   }
-  console.log("all valid");
   submit(formData);
+  console.log(formData);
 });
 
-function submit(formData) {
-  fetch(urlPrefix + "/register", {
+function submit(data) {
+  fetch(urlPrefix + "/user", {
     method: "POST",
-    body: formData,
+    body: data,
   })
     .then((response) => {
       if (!response.ok) {
@@ -39,8 +39,8 @@ function submit(formData) {
       }
       return response.text();
     })
-    .then(async (data) => {
-      console.log("Data sent:");
+    .then((data) => {
+      console.log("Data sent: " + data);
     })
     .catch((error) => {
       console.error("Something went wrong when sending data:", error);
