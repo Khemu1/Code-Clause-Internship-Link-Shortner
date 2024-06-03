@@ -1,0 +1,88 @@
+:root {
+  --body: #111a26;
+  --button: #f12349;
+  --active-button: rgb(76, 60, 161);
+  --from: rgba(76, 60, 161, 1);
+}
+* {
+  box-sizing: border-box;
+  font-family: "Poetsen One", sans-serif;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100dvh;
+  background-color: #111a26;
+  color: white;
+  margin: 0;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+}
+form {
+  display: grid;
+  grid: repeat(5, auto) / 1fr;
+  background-color: #1b2737;
+
+  width: 400px;
+  height: max-content;
+  gap: 15px;
+  justify-items: center;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+form :nth-child(2),
+form :nth-child(3) {
+  display: grid;
+  grid: auto / 110px auto;
+  position: relative;
+  align-items: center;
+}
+label {
+  font-size: 20px;
+}
+input[type="text"],
+input[type="password"] {
+  background-color: transparent;
+  border: none;
+  border-radius: 10px;
+  height: 33px;
+  color: white;
+}
+form :nth-child(2)::after,
+form :nth-child(3)::after {
+  content: "";
+  position: absolute;
+  width: calc(100% - 110px);
+  height: 1px;
+  background-color: white;
+  bottom: 7px;
+  right: 0;
+}
+input[type="text"],
+input[type="password"]:focus-within {
+  outline: none;
+}
+button {
+  font-size: 20px;
+  background-color: #f12349;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 20px;
+  color: white;
+  font-family: "Poetsen One", sans-serif;
+  transition: 250ms ease-in-out;
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: white;
+}
