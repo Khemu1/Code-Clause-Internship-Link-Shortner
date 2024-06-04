@@ -4,8 +4,16 @@ import { fileURLToPath } from "url";
 import path from "path";
 import { dirname } from "path";
 import multer from "multer";
-import mongoose from "mongoose";
+import session from "express-session";
 const app = express();
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 const port = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,6 +40,8 @@ app.post("/user", upload.none(), async (req, res) => {
       password,
     });
     await user.save();
+    let userId = await User.find({ email, username })[0]._id.toString();
+    req.session.userId = userId;
     return res.status(201).send({
       success: true,
     });
@@ -54,7 +64,6 @@ app.post("/get", async (req, res) => {
     if (usersByUsername.length === 0 && usersByEmail.length === 0) {
       return res.status(200).send({
         success: true,
-        body: "No users found",
       });
     }
 
@@ -64,7 +73,7 @@ app.post("/get", async (req, res) => {
           success: false,
           body: {
             username: "already used username",
-            email: "Already used username",
+            email: "Already used email",
           },
         });
       }
@@ -82,7 +91,7 @@ app.post("/get", async (req, res) => {
           success: false,
           body: {
             username: "Already used username",
-            email: "Already used username",
+            email: "Already used email",
           },
         });
       }
@@ -96,6 +105,38 @@ app.post("/get", async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/login", upload.none(), async (req, res) => {
+  if (!req.body)
+    return res.status(400).send({
+      success: false,
+      body: "You must provide a body to this request",
+    });
+  try {
+    const { password, email } = req.body;
+    const user = await User.find({ email, password });
+    if (user.length == 0) {
+      return res.status(200).send({
+        success: false,
+        body: {
+          error: "Invalid Account",
+        },
+      });
+    }
+    const id = user[0]._id.toString();
+    req.session.userId = id;
+    console.log(req.session.userId);
+    return res.status(200).send({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      body: "Something went wrong while searching for account",
+    });
   }
 });
 

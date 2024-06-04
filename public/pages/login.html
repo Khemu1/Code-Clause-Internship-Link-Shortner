@@ -9,7 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../../css/login.css" />
     <title>Login</title>
   </head>
   <body>
@@ -19,17 +19,22 @@
     <div class="container">
       <form class="login">
         <h2>Login</h2>
-        <div>
-          <label for="username">Username</label>
-          <input type="text" name="username" id="username" />
+        <div class="email">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" />
+          <small class="error email-error emailError hide"></small>
         </div>
-        <div>
+        <div class="password">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" />
+          <small class="error password-error passwordError hide"></small>
         </div>
+        <small class="main-error mainError hide"></small>
         <button type="submit">Login</button>
-        <small><a href="">Don't have an account ?</a></small>
+        <small><a href="../../index.html">Don't have an account ?</a></small>
       </form>
     </div>
   </body>
 </html>
+<script type="module" src="../../src/Js/login.js"></script>
+<script type="module" src="../../src/Js/utils.js"></script>

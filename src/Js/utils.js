@@ -26,10 +26,69 @@ export const validateUser = object({
   username: string()
     .required("No user Name provided")
     .label("Username")
-    .min(8, "username is too short , it should be 8 chars  minimum"),
+    .min(8, "Username is too short , it should be 8 chars  minimum"),
   password: string()
     .required("No passwrod provieded")
     .label("Password")
     .min(8, "Password is too short - should be 8 chars minimum.")
     .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
 });
+export const validateLogin = object({
+  email: string()
+    .email("Please enter a valid email")
+    .required("No Email provided")
+    .label("email"),
+  password: string().required("No passwrod provieded").label("password"),
+});
+
+/**
+ *
+ * @param {Object} errors
+ */
+export function displayErrors(errors) {
+  let emailError = document.querySelector(".email-error");
+  let usernameError = document.querySelector(".username-error");
+  let passwordError = document.querySelector(".password-error");
+  let EmailField = document.querySelector(".email");
+  let UsernameField = document.querySelector(".username");
+  let PasswordField = document.querySelector(".password");
+  if (errors.email) {
+    emailError.innerHTML = errors.email;
+    emailError.classList.remove("hide");
+    EmailField.classList.add("red-field");
+  }
+  if (errors.username) {
+    usernameError.innerHTML = errors.username;
+    usernameError.classList.remove("hide");
+    UsernameField.classList.add("red-field");
+  }
+  if (errors.password) {
+    passwordError.innerHTML = errors.password;
+    passwordError.classList.remove("hide");
+    PasswordField.classList.add("red-field");
+  }
+}
+
+export function displayError(error) {
+  let mainError = document.querySelector(".mainError");
+  let emailError = document.querySelector(".emailError");
+  let passwordError = document.querySelector(".passwordError");
+  let EmailField = document.querySelector(".email");
+  let PasswordField = document.querySelector(".password");
+  if (error.email) {
+    emailError.innerHTML = error.email;
+    emailError.classList.remove("hide");
+    EmailField.classList.add("red-field");
+  }
+  if (error.password) {
+    passwordError.innerHTML = error.password;
+    passwordError.classList.remove("hide");
+    PasswordField.classList.add("red-field");
+  }
+  if (error.error) {
+    PasswordField.classList.add("red-field");
+    EmailField.classList.add("red-field");
+    mainError.classList.remove("hide");
+    mainError.innerHTML = error.error;
+  }
+}

@@ -33,14 +33,15 @@ form {
 
   width: 400px;
   height: max-content;
-  gap: 15px;
+  gap: 25px;
   justify-items: center;
   padding: 10px;
   border-radius: 10px;
 }
 
-form :nth-child(2),
-form :nth-child(3) {
+form .email,
+form .password {
+  position: relative;
   display: grid;
   grid: auto / 110px auto;
   position: relative;
@@ -57,13 +58,23 @@ input[type="password"] {
   height: 33px;
   color: white;
 }
-form :nth-child(2)::after,
-form :nth-child(3)::after {
+form .email::after,
+form .password::after {
   content: "";
   position: absolute;
   width: calc(100% - 110px);
   height: 1px;
   background-color: white;
+  bottom: 7px;
+  right: 0;
+}
+form .red-field::after,
+form .red-field::after {
+  content: "";
+  position: absolute;
+  width: calc(100% - 110px);
+  height: 1px;
+  background-color: red;
   bottom: 7px;
   right: 0;
 }
@@ -85,4 +96,23 @@ button {
 a {
   text-decoration: none;
   color: white;
+}
+.error {
+  position: absolute;
+  color: red;
+  left: 36%;
+  font-size: 12px;
+}
+.main-error {
+  color: red;
+  font-size: 16px;
+}
+.email-error {
+  bottom: calc(0% - 12px);
+}
+.password-error {
+  bottom: calc(0% - 12px);
+}
+.hide {
+  display: none;
 }

@@ -19,22 +19,27 @@
         <div class="email">
           <label for="email">Email</label>
           <input type="text" name="email" id="email" />
-          <small class="error email">error</small>
+          <small class="error email-error hide"></small>
         </div>
         <div class="username">
           <label for="username">Username</label>
           <input type="text" name="username" id="username" />
-          <small class="error username">username</small>
+          <small class="error username-error hide"></small>
         </div>
         <div class="password">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" />
-          <small class="error username">password</small>
+          <small class="error password-error hide"></small>
         </div>
         <button type="submit">Register</button>
-        <small><a href="">Already have an account ?</a></small>
+        <small
+          ><a href="./public/pages/login.html"
+            >Already have an account ?</a
+          ></small
+        >
       </form>
     </div>
   </body>
 </html>
-<script type="module" src="../../src/Js/form.js"></script>
+<script type="module" src="./src/Js/index.js"></script>
+<script type="module" src="../../src/Js/utils.js"></script>
