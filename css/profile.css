@@ -1,0 +1,126 @@
+:root {
+  --body: #111a26;
+  --button: #f12349;
+  --active-button: rgb(76, 60, 161);
+  --card-bg: rgba(76, 60, 161, 0.8);
+  --link-bg: #f12349;
+  --qr-bg: rgb(0, 115, 255);
+  --card-hover-bg: rgba(76, 60, 161, 1);
+}
+* {
+  box-sizing: border-box;
+  font-family: "Poetsen One", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+body {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--body);
+  color: white;
+}
+nav {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding: 10px;
+}
+nav p {
+  text-transform: capitalize;
+  font-size: 30px;
+}
+.icon {
+  position: relative;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: max-content;
+  background-color: rgba(0, 0, 0, 0.81);
+  padding: 10px;
+  transform: translateX(-20%);
+  transition: 250ms ease-in-out;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.menu > * {
+  cursor: pointer;
+}
+.hide {
+  width: 0%;
+  padding: 0px;
+}
+div p.name {
+  text-transform: capitalize;
+  font-size: 30px;
+  background: linear-gradient(
+    170deg,
+    rgba(76, 60, 161, 1) 44%,
+    rgba(18, 85, 159, 1) 56%
+  );
+  width: max-content;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+}
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
+div.data {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s;
+}
+div.data:hover {
+  background: var(--card-hover-bg);
+}
+div.link-qr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.link,
+.qr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+}
+.link {
+  background-color: var(--link-bg);
+  flex: 2;
+  margin-right: 10px;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+.link a:hover {
+  text-decoration: underline;
+}
+.qr {
+  background-color: var(--qr-bg);
+  flex: 1;
+}
+.qr:hover {
+  background-color: darkblue;
+}
+div.info {
+  font-size: 16px;
+}
+span.visits {
+  font-weight: bold;
+}

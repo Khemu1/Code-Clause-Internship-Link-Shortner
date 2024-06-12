@@ -3,6 +3,12 @@
   --button: #f12349;
   --active-button: rgb(76, 60, 161);
 }
+a {
+  font-family: "Poetsen One", sans-serif;
+
+  text-decoration: none;
+  color: white;
+}
 * {
   box-sizing: border-box;
 }
@@ -17,7 +23,8 @@ body {
 }
 nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   background: rgb(76, 60, 161);
   background: linear-gradient(
     150deg,
@@ -31,6 +38,31 @@ nav p {
   text-transform: capitalize;
   font-size: 30px;
 }
+.icon {
+  position: relative;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: max-content;
+  background-color: rgba(0, 0, 0, 0.81);
+  padding: 10px;
+  transform: translateX(-20%);
+  transition: 250ms ease-in-out;
+  overflow: hidden;
+  border-radius: 10px;
+}
+.menu > * {
+  cursor: pointer;
+}
+.hide {
+  width: 0%;
+  padding: 0px;
+}
 .gen {
   display: flex;
   justify-content: center;
@@ -41,7 +73,7 @@ form {
   display: grid;
   grid: repeat(2, 1fr) / 1fr;
   justify-content: center;
-  gap: 20px;
+  gap: 50px;
   width: 100%;
 }
 form > :nth-child(1),
@@ -50,40 +82,36 @@ form > :nth-child(2) {
   width: 100%;
   justify-content: center;
 }
-.url {
+.url,
+.custom-url {
   width: calc(50%);
   height: 70px;
   border: none;
   border-radius: 15px;
   text-indent: 20px;
   font-size: 20px;
+  transition: 250ms ease-in-out;
+}
+.url:focus,
+.custom-url:focus {
+  outline: none;
+  box-shadow: 0px 0px 25px red;
 }
 .custom-url {
-  width: calc(50%);
-  height: 70px;
-  border: none;
-  border-radius: 15px 0px 0px 15px;
-  text-indent: 20px;
-  font-size: 20px;
-}
-.custom-url:focus-within,
-.url:focus-within {
-  outline: none;
+  border-radius: 15px 0 0 15px;
 }
 input[type="submit"] {
-  width: calc(10%);
   height: 70px;
   font-size: 20px;
   background-color: #f12349;
   border: none;
-  border-radius: 0px 15px 15px 0px;
+  border-radius: 0 15px 15px 0;
   padding: 10px;
   color: white;
   font-family: "Poetsen One", sans-serif;
   transition: 250ms ease-in-out;
   cursor: pointer;
 }
-
 input[type="submit"]:active {
   background-color: rgba(18, 85, 159, 1);
   color: white;

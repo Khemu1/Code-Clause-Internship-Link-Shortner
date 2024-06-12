@@ -14,6 +14,13 @@ app.use(
     cookie: { secure: false },
   })
 );
+const checkSession = (req, res, next) => {
+  if (req.session && req.session.userId) {
+    next();
+    return;
+  }
+  res.redirect("./login");
+};
 const port = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +33,7 @@ connectDB();
 app.use(express.json());
 const upload = multer();
 
-app.post("/user", upload.none(), async (req, res) => {
+app.post("/register", upload.none(), async (req, res) => {
   if (!req.body)
     return res.status(400).send({
       success: false,
@@ -34,13 +41,14 @@ app.post("/user", upload.none(), async (req, res) => {
     });
   try {
     const { email, username, password } = req.body;
+    console.log(req.body);
     const user = new User({
       email,
       username,
       password,
     });
     await user.save();
-    let userId = await User.find({ email, username })[0]._id.toString();
+    let userId = await User.find({ email, username });
     req.session.userId = userId;
     return res.status(201).send({
       success: true,
@@ -56,52 +64,36 @@ app.post("/user", upload.none(), async (req, res) => {
 app.post("/get", async (req, res) => {
   try {
     const { username, email } = req.body;
-    console.log(username, email);
 
-    const usersByUsername = await User.find({ username });
-    const usersByEmail = await User.find({ email });
+    const usersByUsername = await User.find({ username }).exec();
+    const usersByEmail = await User.find({ email }).exec();
 
-    if (usersByUsername.length === 0 && usersByEmail.length === 0) {
-      return res.status(200).send({
-        success: true,
-      });
+    console.log("Users by username:", usersByUsername);
+    console.log("Users by email:", usersByEmail);
+
+    let errors = {};
+
+    if (usersByUsername.length > 0) {
+      errors.username = "Already used username";
     }
 
-    if (usersByEmail.length != 0) {
-      if (usersByUsername.length != 0) {
-        return res.status(200).send({
-          success: false,
-          body: {
-            username: "already used username",
-            email: "Already used email",
-          },
-        });
-      }
+    if (usersByEmail.length > 0) {
+      errors.email = "Already used email";
+    }
+
+    if (Object.keys(errors).length > 0) {
       return res.status(200).send({
         success: false,
-        body: {
-          email: "Already used email",
-        },
+        body: errors,
       });
     }
 
-    if (usersByUsername.length != 0) {
-      if (usersByEmail.length != 0) {
-        return res.status(200).send({
-          success: false,
-          body: {
-            username: "Already used username",
-            email: "Already used email",
-          },
-        });
-      }
-      return res.status(200).send({
-        success: false,
-        body: {
-          username: "Already used username",
-        },
-      });
-    }
+    return res.status(200).send({
+      success: true,
+      body: {
+        message: "All Valid",
+      },
+    });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -116,7 +108,7 @@ app.post("/login", upload.none(), async (req, res) => {
     });
   try {
     const { password, email } = req.body;
-    const user = await User.find({ email, password });
+    const user = await User.find({ email: email, password: password }).exec();
     if (user.length == 0) {
       return res.status(200).send({
         success: false,
@@ -138,6 +130,28 @@ app.post("/login", upload.none(), async (req, res) => {
       body: "Something went wrong while searching for account",
     });
   }
+});
+
+app.get("/home", checkSession, (req, res) => {
+  res.sendFile("pages/home.html");
+});
+app.get("/check-session", (req, res) => {
+  if (req.session && req.session.userId) {
+    res.json({ authenticated: true });
+  } else {
+    res.json({ authenticated: false });
+  }
+});
+app.get("/logout", (req, res) => {
+  req.session.destroy(function (err) {
+    if (err) {
+      console.log(err);
+      return res.status(500).send({
+        success: false,
+        body: "Something went wrong while logging out",
+      });
+    }
+  });
 });
 
 app.listen(port, () => {

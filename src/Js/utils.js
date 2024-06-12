@@ -26,12 +26,12 @@ export const validateUser = object({
   username: string()
     .required("No user Name provided")
     .label("Username")
-    .min(8, "Username is too short , it should be 8 chars  minimum"),
+    .min(5, "Username is too short , it should be 5 chars  minimum"),
   password: string()
     .required("No passwrod provieded")
     .label("Password")
     .min(8, "Password is too short - should be 8 chars minimum.")
-    .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+    .matches(/[a-zA-Z0-9 ]/, "Password should only contain Latin letters and Numbers."),
 });
 export const validateLogin = object({
   email: string()

@@ -13,17 +13,37 @@
     <title>Home</title>
   </head>
   <body>
-    <nav><p>link shortener</p></nav>
+    <nav>
+      <p>link shortener</p>
+      <div class="icon">
+        <img src="../assets/images/icons8-user-40.png" alt="User Icon" />
+        <div class="menu hide">
+          <a href="./profile.html" class="profile">Profile</a>
+          <a href="./login.html" class="home">Logout</a>
+        </div>
+      </div>
+    </nav>
     <div class="gen">
       <form method="POST">
         <div>
-          <input type="text" name="url" class="url" />
+          <input
+            type="text"
+            name="url"
+            class="url"
+            placeholder="Paste the Original URL"
+          />
         </div>
         <div>
-          <input type="text" name="url" class="custom-url" />
+          <input
+            type="text"
+            name="url"
+            class="custom-url"
+            placeholder="Write Your Custom URL"
+          />
           <input type="submit" value="shorten" />
         </div>
       </form>
     </div>
   </body>
 </html>
+<script type="module" src="../../src/Js/home.js"></script>

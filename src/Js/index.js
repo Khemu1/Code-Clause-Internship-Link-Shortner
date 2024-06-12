@@ -41,11 +41,11 @@ registerForm.addEventListener("submit", async (e) => {
   EmailField.classList.remove("red-field");
   UsernameField.classList.remove("red-field");
   PasswordField.classList.remove("red-field");
-  retrieve(formData.get("username"), formData.get("email"));
+  retrieve(formData.get("email"), formData.get("username"),formData);
 });
 
 function submit(data) {
-  fetch(urlPrefix + "/user", {
+  fetch(urlPrefix + "/register", {
     method: "POST",
     body: data,
   })
@@ -56,37 +56,38 @@ function submit(data) {
       return response.json();
     })
     .then((data) => {
-      console.log("Data sent: " + data);
+      if (data.success) {
+        window.location.href = "http://localhost:5173/pages/home.html";
+      } else {
+        console.error("Registration failed:", data.body);
+      }
     })
     .catch((error) => {
       console.error("Something went wrong when sending data:", error);
     });
 }
 
-function retrieve(name, email) {
+function retrieve(email, username, formData) {
   fetch(urlPrefix + "/get", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      username: name,
-      email: email,
-    }),
+    body: JSON.stringify({ email, username }),
   })
     .then((response) => {
       if (!response.ok) {
         throw new Error("HTTP error, status = " + response.status);
       }
-      return response.json(); // Parse the JSON response
+      return response.json();
     })
     .then((data) => {
-      if (!data.success) {
+      console.log(data);
+      if (data.success) {
+        submit(formData);
+      } else {
         displayErrors(data.body);
-        return;
       }
-      const formData = new FormData(registerForm);
-      submit(formData);
     })
     .catch((error) => {
       console.error("Error:", error);

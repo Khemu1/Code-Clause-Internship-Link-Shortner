@@ -115,7 +115,7 @@ a {
   bottom: calc(0% - 6px);
 }
 .password-error {
-  bottom: calc(0% - 6px);
+  bottom: calc(0% - 17px);
 }
 .hide {
   display: none;

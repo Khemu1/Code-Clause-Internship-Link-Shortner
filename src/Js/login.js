@@ -59,10 +59,11 @@ function retrieve(email, password) {
       return response.json(); // Parse the JSON response
     })
     .then((data) => {
-      if (!data.success) {
-        displayError(data.body);
+      if (data.success) {
+        window.location.href = "http://localhost:5173/pages/home.html";
         return;
       }
+      displayError(data.body);
     })
     .catch((error) => {
       console.error("Error:", error);

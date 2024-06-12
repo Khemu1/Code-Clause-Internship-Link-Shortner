@@ -9,25 +9,34 @@ const connectDB = async () => {
   }
 };
 
-const urlSchema = new mongoose.Schema({
-  originalUrl: String,
-  shortUrl: { type: String, unique: true, index: true }, // Add index for better performance
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-});
+const urlSchema = new mongoose.Schema(
+  {
+    originalUrl: String,
+    shortUrl: { type: String, unique: true, index: true }, // Add index for better performance
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { collection: "urls" }
+);
 
-const urlAnaticsSchema = new mongoose.Schema({
-  shortUrl: { type: mongoose.Schema.Types.String, ref: "Url" },
-  views: { type: Number, default: 0 }, // Initialize with a default value
-});
+const urlAnaticsSchema = new mongoose.Schema(
+  {
+    shortUrl: { type: mongoose.Schema.Types.String, ref: "Url" },
+    views: { type: Number, default: 0 }, // Initialize with a default value
+  },
+  { collection: "urlanatics" }
+);
 
-const accountSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  password: String,
-  email: { type: String, unique: true },
-});
+const userSchema = new mongoose.Schema(
+  {
+    username: { type: String, required: true },
+    email: { type: String, required: true },
+    password : { type: String, required: true}
+  },
+  { collection: "users" }
+);
 
 const Url = mongoose.model("Url", urlSchema);
-const User = mongoose.model("User", accountSchema);
+const User = mongoose.model("User", userSchema);
 const UrlAnatics = mongoose.model("UrlAnatics", urlAnaticsSchema);
 
 export { connectDB, Url, User, UrlAnatics };
