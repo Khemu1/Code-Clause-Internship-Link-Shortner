@@ -12,7 +12,7 @@ const connectDB = async () => {
 const urlSchema = new mongoose.Schema(
   {
     originalUrl: String,
-    shortUrl: { type: String, unique: true, index: true }, // Add index for better performance
+    shortUrl: { type: String, unique: true, index: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { collection: "urls" }
@@ -20,8 +20,9 @@ const urlSchema = new mongoose.Schema(
 
 const urlAnaticsSchema = new mongoose.Schema(
   {
-    shortUrl: { type: mongoose.Schema.Types.String, ref: "Url" },
-    views: { type: Number, default: 0 }, // Initialize with a default value
+    shortUrl: {  type: mongoose.Schema.Types.String, unique: true,ref: "Url" },
+    views: { type: Number, default: 0 },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { collection: "urlanatics" }
 );

@@ -31,7 +31,10 @@ export const validateUser = object({
     .required("No passwrod provieded")
     .label("Password")
     .min(8, "Password is too short - should be 8 chars minimum.")
-    .matches(/[a-zA-Z0-9 ]/, "Password should only contain Latin letters and Numbers."),
+    .matches(
+      /[a-zA-Z0-9 ]/,
+      "Password should only contain Latin letters and Numbers."
+    ),
 });
 export const validateLogin = object({
   email: string()
@@ -39,6 +42,15 @@ export const validateLogin = object({
     .required("No Email provided")
     .label("email"),
   password: string().required("No passwrod provieded").label("password"),
+});
+
+export const validateUrl = object({
+  shortUrl: string()
+    .matches(
+      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+      "Enter A Correct Url!, like : https://mylink.co.uk"
+    )
+    .required("Please Enter A URL"),
 });
 
 /**
@@ -91,4 +103,17 @@ export function displayError(error) {
     mainError.classList.remove("hide");
     mainError.innerHTML = error.error;
   }
+}
+export function HomedisplayError(error) {
+  let errorField = document.querySelector(".error");
+  let inputField = document.querySelector(".custom-url");
+  errorField.textContent = error.shortUrl;
+  inputField.classList.add("display-error");
+}
+export function resetHomeDisplayError() {
+  let errorField = document.querySelector(".error");
+  let inputField = document.querySelector(".custom-url");
+  errorField.textContent = "";
+  inputField.classList.remove("display-error");
+  inputField.classList.remove("valid");
 }

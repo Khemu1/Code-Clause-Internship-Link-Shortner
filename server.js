@@ -91,7 +91,7 @@ app.post("/get", async (req, res) => {
     return res.status(200).send({
       success: true,
       body: {
-        message: "All Valid",
+        shortUrl: "All Valid",
       },
     });
   } catch (error) {
@@ -131,9 +131,37 @@ app.post("/login", upload.none(), async (req, res) => {
     });
   }
 });
-
-app.get("/home", checkSession, (req, res) => {
-  res.sendFile("pages/home.html");
+app.post("/insert", upload.none(), async (req, res) => {
+  try {
+    const { originalUrl, shortUrl } = req.body;
+    const userId = req.session.userId;
+    let find = await Url.find({ shortUrl: shortUrl }).exec();
+    if (find.length > 0) {
+      let errors = {};
+      errors.message = "This Custom URL Is Already Taken";
+      return res.status(200).json({
+        success: false,
+        body: errors,
+      });
+    }
+    const customUrl = new Url({
+      originalUrl: originalUrl,
+      shortUrl: shortUrl,
+      user: userId,
+    });
+    const urlanatics = new UrlAnatics({
+      shortUrl: shortUrl,
+      user: userId,
+    });
+    await customUrl.save();
+    await urlanatics.save();
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred while saving the URL" });
+  }
 });
 app.get("/check-session", (req, res) => {
   if (req.session && req.session.userId) {

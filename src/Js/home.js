@@ -1,5 +1,13 @@
+import {
+  HomedisplayError,
+  resetHomeDisplayError,
+  validateUrl,
+  transformYupErrorsIntoObject,
+} from "./utils.js";
 let icon = document.querySelector(".icon");
 let logoutp = document.querySelector(".logout");
+let form = document.querySelector("form");
+let customUrl = document.querySelector(".custom-url");
 const urlPrefix = "/api";
 checkSession();
 
@@ -13,10 +21,35 @@ document.body.addEventListener("click", (e) => {
     menu.classList.add("hide");
   }
 });
-logoutp.addEventListener("click", (e) => { 
+logoutp.addEventListener("click", (e) => {
   logout();
   return;
-})
+});
+
+
+customUrl.addEventListener("click", (e) => {
+  resetHomeDisplayError();
+});
+form.addEventListener("submit", async(e) => {
+  e.preventDefault();
+  let formData = new FormData(form);
+  let errors;
+  try {
+    let shortUrl = formData.get("shortUrl");
+    await validateUrl.validate(
+      {
+        shortUrl: shortUrl,
+      },{abortEarly: false});
+  } catch (error) {
+    errors = transformYupErrorsIntoObject(error);
+  }
+  if (errors) {
+    console.log("i do have errors", errors);
+    HomedisplayError(errors);
+    return;
+  }
+  insertUrl(formData);
+});
 function checkSession() {
   fetch(`${urlPrefix}/check-session`)
     .then((response) => {
@@ -54,5 +87,34 @@ function logout() {
     .catch((error) => {
       console.log("Error", error);
       window.location.href = "/login.html";
+    });
+}
+function insertUrl(formData) {
+  fetch(`${urlPrefix}/insert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      originalUrl: formData.get("originalUrl"),
+      shortUrl: formData.get("shortUrl"),
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("HTTP error, status = " + response.status);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (!data.success) {
+        HomedisplayError(data.body);
+        return;
+      }
+      customUrl.classList.add("valid");
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
     });
 }

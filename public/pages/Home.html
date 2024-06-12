@@ -19,7 +19,7 @@
         <img src="../assets/images/icons8-user-40.png" alt="User Icon" />
         <div class="menu hide">
           <a href="./profile.html" class="profile">Profile</a>
-          <a href="./login.html" class="home">Logout</a>
+          <a href="./login.html" class="logout">Logout</a>
         </div>
       </div>
     </nav>
@@ -28,22 +28,25 @@
         <div>
           <input
             type="text"
-            name="url"
+            name="originalUrl"
             class="url"
             placeholder="Paste the Original URL"
+            value="https://www.youtube.com/"
           />
         </div>
         <div>
           <input
             type="text"
-            name="url"
+            name="shortUrl"
             class="custom-url"
             placeholder="Write Your Custom URL"
           />
           <input type="submit" value="shorten" />
+          <small class="error"></small>
         </div>
       </form>
     </div>
   </body>
 </html>
 <script type="module" src="../../src/Js/home.js"></script>
+<script type="module" src="../../src/Js/utils.js"></script>
