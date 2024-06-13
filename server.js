@@ -42,7 +42,6 @@ app.post("/register", upload.none(), async (req, res) => {
     });
   try {
     const { email, username, password } = req.body;
-    console.log(req.body);
     const user = new User({
       email,
       username,
@@ -55,22 +54,58 @@ app.post("/register", upload.none(), async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).send({
       success: false,
       body: "Something went wrong while inserting",
     });
   }
 });
+app.get("/name", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(400).send({
+        success: false,
+        body: {
+          error: "User ID not found in session",
+        },
+      });
+    }
+
+    let account = await User.findById(userId).exec();
+
+    if (!account) {
+      return res.status(404).send({
+        success: false,
+        body: {
+          error: "User not found",
+        },
+      });
+    }
+
+    return res.status(200).send({
+      success: true,
+      body: {
+        username: account.username,
+      },
+    });
+  } catch (error) {
+    console.error("Error in /name route:", error);
+    return res.status(500).send({
+      success: false,
+      body: {
+        error: "Internal server error",
+      },
+    });
+  }
+});
+
 app.post("/get", async (req, res) => {
   try {
     const { username, email } = req.body;
 
     const usersByUsername = await User.find({ username }).exec();
     const usersByEmail = await User.find({ email }).exec();
-
-    console.log("Users by username:", usersByUsername);
-    console.log("Users by email:", usersByEmail);
 
     let errors = {};
 
@@ -120,12 +155,10 @@ app.post("/login", upload.none(), async (req, res) => {
     }
     const id = user[0]._id.toString();
     req.session.userId = id;
-    console.log(req.session.userId);
     return res.status(200).send({
       success: true,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).send({
       success: false,
       body: "Something went wrong while searching for account",
@@ -145,7 +178,9 @@ app.post("/insert", upload.none(), async (req, res) => {
         body: errors,
       });
     }
-    const qrCode = await QRCode.toDataURL(shortUrl);
+    const qrCode = await QRCode.toDataURL(
+      `http://localhost:${port}/link/${shortUrl}`
+    );
     const customUrl = new Url({
       originalUrl: originalUrl,
       shortUrl: shortUrl,
@@ -162,6 +197,7 @@ app.post("/insert", upload.none(), async (req, res) => {
       success: true,
       body: {
         QRCode: qrCode,
+        shortUrl: `http://localhost:${port}/link/${shortUrl}`,
       },
     });
   } catch (error) {
@@ -191,7 +227,8 @@ app.get("/info", async (req, res) => {
     urls.forEach((url) => {
       info.push({
         username: user.username,
-        shortUrl: url.shortUrl,
+        originalUrl: url.originalUrl,
+        shortUrl: `http://localhost:${port}/link/${url.shortUrl}`,
         qrCode: url.qrCode,
         views: analyticsMap[url.shortUrl],
       });
@@ -201,17 +238,44 @@ app.get("/info", async (req, res) => {
       body: info,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).send({
       success: false,
       body: "Something went wrong while searching for account",
     });
   }
 });
+
+app.get("/link/:shortUrl", async (req, res) => {
+  const shortUrl = req.params.shortUrl;
+
+  try {
+    const urlDoc = await Url.findOne({ shortUrl: shortUrl });
+    if (!urlDoc) {
+      return res.status(404).json({
+        success: false,
+        message: "Short URL not found",
+      });
+    }
+
+    await UrlAnatics.findOneAndUpdate(
+      { shortUrl: shortUrl },
+      { $inc: { views: 1 } },
+      { new: true, upsert: true }
+    );
+
+    res.redirect(urlDoc.originalUrl);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Redirection failed",
+    });
+  }
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy(function (err) {
     if (err) {
-      console.log(err);
       return res.status(500).send({
         success: false,
         body: "Something went wrong while logging out",

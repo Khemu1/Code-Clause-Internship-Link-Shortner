@@ -1,11 +1,12 @@
 :root {
-  --body: #111a26;
+  --body: hsl(0, 0%, 7%);
+  --nav: #282626;
   --button: #f12349;
   --active-button: rgb(76, 60, 161);
-  --card-bg: rgba(76, 60, 161, 0.8);
-  --link-bg: #f12349;
-  --qr-bg: rgb(0, 115, 255);
-  --card-hover-bg: rgba(76, 60, 161, 1);
+  --card-bg: #064a75;
+  --link-bg: white;
+  --qr-bg: #1b71aa;
+  --card-hover-bg: #123d79;
 }
 * {
   box-sizing: border-box;
@@ -15,7 +16,8 @@
 }
 body {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 40px;
   width: 100%;
   height: 100vh;
   background-color: var(--body);
@@ -23,16 +25,22 @@ body {
 }
 nav {
   display: flex;
-  justify-content: right;
+  background-color: var(--nav);
+  justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 20px 10px;
+}
+.title {
+  font-size: 1.5em;
 }
 nav p {
   text-transform: capitalize;
-  font-size: 30px;
+  font-size: 1.5em;
 }
 .icon {
+  display: flex;
   position: relative;
+  align-items: center;
   margin-right: 30px;
   cursor: pointer;
 }
@@ -42,12 +50,14 @@ nav p {
   flex-direction: column;
   gap: 10px;
   width: max-content;
-  background-color: rgba(0, 0, 0, 0.81);
+  background-color: white;
   padding: 10px;
-  transform: translateX(-20%);
+  right: -12px;
+  top: 40px;
   transition: 250ms ease-in-out;
   overflow: hidden;
   border-radius: 10px;
+  z-index: 100px;
 }
 .menu > * {
   cursor: pointer;
@@ -55,19 +65,6 @@ nav p {
 .hide {
   width: 0%;
   padding: 0px;
-}
-div p.name {
-  text-transform: capitalize;
-  font-size: 30px;
-  background: linear-gradient(
-    170deg,
-    rgba(76, 60, 161, 1) 44%,
-    rgba(18, 85, 159, 1) 56%
-  );
-  width: max-content;
-  padding: 20px;
-  margin: 10px;
-  border-radius: 10px;
 }
 section {
   display: flex;
@@ -106,7 +103,7 @@ div.link-qr {
   margin-right: 10px;
 }
 a {
-  color: white;
+  color: #121212;
   text-decoration: none;
 }
 .link a:hover {

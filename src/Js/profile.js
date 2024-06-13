@@ -1,8 +1,8 @@
+checkSession();
+getInfo();
 let icon = document.querySelector(".icon");
 let logoutp = document.querySelector(".logout");
 const urlPrefix = "/api";
-checkSession();
-getInfo();
 
 icon.addEventListener("click", (e) => {
   let menu = document.querySelector(".menu");
@@ -19,6 +19,7 @@ logoutp.addEventListener("click", (e) => {
   logout();
   return;
 });
+
 function checkSession() {
   fetch(`${urlPrefix}/check-session`)
     .then((response) => {
@@ -70,7 +71,7 @@ async function getInfo() {
     })
     .catch((error) => {
       console.log("Error", error);
-      // window.location.href = "http://localhost:5173/pages/login.html";
+      window.location.href = "http://localhost:5173/pages/login.html";
     });
 }
 
@@ -79,14 +80,18 @@ async function getInfo() {
  * @param {Array} data
  */
 function displayInfo(data) {
+  let section = document.querySelector("section");
+  section.innerHTML = "";
   data.forEach((item) => {
     let username = item.username;
-    document.querySelector(".name").textContent = `Welcome Back ${username}`;
+    document.querySelector(".name").textContent = `${username}`;
     let div = document.createElement("div");
     div.classList.add("data");
     div.innerHTML = `
         <div class="link-qr">
-          <div class="link"><a href="./">${item.shortUrl}</a></div>
+          <div class="link"><a href="${item.shortUrl}" target="_blank">${
+      item.shortUrl.split("/")[4]
+    }</a></div>
           <div class="qr"><img src ="../../public/assets/images/qr-code-svgrepo-com.svg" ></div>
         </div>
         <div class="info">
@@ -100,13 +105,28 @@ function displayInfo(data) {
 
 async function attachEvents(data) {
   await displayInfo(data);
-
   let dataElements = document.querySelectorAll(".data");
   dataElements.forEach((element) => {
+    let link = element.querySelector(".link a");
     const qrButton = element.querySelector(".qr");
+    let visits = element.querySelector(".visits");
     qrButton.addEventListener("click", (e) => {
       let qrImg = element.querySelector(".qr-img");
       qrImg.classList.toggle("hidden");
+    });
+
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      console.log(link.href);
+      let newTab = window.open(link.href, "_blank");
+      newTab.focus();
+      try {
+        let oldValue = visits.textContent;
+        let newValue = parseInt(oldValue) + 1;
+        visits.textContent = newValue;
+      } catch (error) {
+        console.error("Error updating visit count:", error);
+      }
     });
   });
 }

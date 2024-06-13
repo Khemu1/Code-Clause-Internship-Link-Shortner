@@ -4,13 +4,14 @@ import {
   validateUrl,
   transformYupErrorsIntoObject,
 } from "./utils.js";
+checkSession();
+getName();
 let icon = document.querySelector(".icon");
 let logoutp = document.querySelector(".logout");
 let form = document.querySelector("form");
 let customUrl = document.querySelector(".custom-url");
 let qrContainer = document.querySelector(".qr-containter");
 const urlPrefix = "/api";
-checkSession();
 
 icon.addEventListener("click", (e) => {
   let menu = document.querySelector(".menu");
@@ -36,8 +37,12 @@ form.addEventListener("submit", async (e) => {
   let errors;
   try {
     let shortUrl = formData.get("shortUrl");
+    let originalUrl = formData.get("originalUrl");
+    console.log(shortUrl);
+
     await validateUrl.validate(
       {
+        originalUrl: originalUrl,
         shortUrl: shortUrl,
       },
       { abortEarly: false }
@@ -46,12 +51,12 @@ form.addEventListener("submit", async (e) => {
     errors = transformYupErrorsIntoObject(error);
   }
   if (errors) {
-    console.log("i do have errors", errors);
+    resetHomeDisplayError();
     HomedisplayError(errors);
+    console.log(errors);
     return;
   }
-  qrContainer.classList.add("hidden");
-
+  resetHomeDisplayError();
   insertUrl(formData);
 });
 function checkSession() {
@@ -120,6 +125,27 @@ function insertUrl(formData) {
       let qrImg = document.querySelector("#qr-img");
       qrImg.src = qr;
       qrContainer.classList.remove("hidden");
+      document.querySelector(".custom-url").value = data.body.shortUrl;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+function getName() {
+  fetch(`${urlPrefix}/name`)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error("HTTP error, status = " + response.status);
+    })
+    .then((data) => {
+      if (!data.success) {
+        return;
+      }
+      let name = document.querySelector(".name");
+      name.textContent = data.body.username;
     })
     .catch((error) => {
       console.error("Error:", error);

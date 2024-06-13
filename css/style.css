@@ -1,7 +1,9 @@
 :root {
-  --body: #111a26;
-  --button: #f12349;
+  --body: hsl(0, 0%, 7%);
+  --nav: #282626;
   --active-button: rgb(76, 60, 161);
+  --button-color: #064a75;
+  --button-active: #f12349;
 }
 a {
   font-family: "Poetsen One", sans-serif;
@@ -16,7 +18,7 @@ body {
   grid: auto 1fr / auto;
   width: 100%;
   height: 100dvh;
-  background-color: #111a26;
+  background-color: var(--body);
   color: white;
   margin: 0;
 }
@@ -24,13 +26,8 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgb(76, 60, 161);
-  background: linear-gradient(
-    150deg,
-    rgba(76, 60, 161, 1) 44%,
-    rgba(18, 85, 159, 1) 56%
-  );
-  padding: 10px;
+  background: var(--nav);
+  padding: 20px 10px;
 }
 nav p {
   font-family: "Poetsen One", sans-serif;
@@ -38,7 +35,9 @@ nav p {
   font-size: 30px;
 }
 .icon {
+  display: flex;
   position: relative;
+  align-items: center;
   margin-right: 30px;
   cursor: pointer;
 }
@@ -50,13 +49,16 @@ nav p {
   width: max-content;
   background-color: rgba(0, 0, 0, 0.81);
   padding: 10px;
-  transform: translateX(-20%);
+  right: -17px;
+  top: 67px;
   transition: 250ms ease-in-out;
   overflow: hidden;
   border-radius: 10px;
+  background-color: white;
 }
 .menu > * {
   cursor: pointer;
+  color: #000;
 }
 .hide {
   width: 0%;
@@ -110,7 +112,7 @@ form > :nth-child(2) {
 input[type="submit"] {
   height: 70px;
   font-size: 20px;
-  background-color: #f12349;
+  background-color: var(--button-color);
   border: none;
   border-radius: 0 15px 15px 0;
   padding: 10px;
@@ -120,7 +122,7 @@ input[type="submit"] {
   cursor: pointer;
 }
 input[type="submit"]:active {
-  background-color: rgba(18, 85, 159, 1);
+  background-color: var(--button-active);
   color: white;
 }
 .qr-containter {
@@ -145,9 +147,9 @@ input[type="submit"]:active {
   color: red;
   bottom: -30px;
 }
-.custom-url.display-error {
+.display-error {
   box-shadow: 0px 0px 25px red;
 }
-.custom-url.valid {
+.valid {
   box-shadow: 0px 0px 25px green;
 }
