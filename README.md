@@ -1,13 +1,13 @@
 # Link Shortener Project
 
-This project is a Link Shortener web application built using Node.js, Express.js, MongoDB, and Vite. It allows users to shorten URLs, manage their links, and customize short URLs.
+This project is a Link Shortener web application built using Node.js, Express.js, MongoDB, and Vite. It enables users to shorten URLs using custom links and provides QR codes for each custom link. The application also tracks and displays the total number of views for each link on the user's profile page.
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 - Node.js installed
 - npm (Node Package Manager) installed
-- MongoDB installed and running
+- MongoDB Compass installed and running
 
 ## Installation
 
