@@ -5,6 +5,7 @@ import path from "path";
 import { dirname } from "path";
 import multer from "multer";
 import session from "express-session";
+import QRCode from "qrcode";
 const app = express();
 app.use(
   session({
@@ -144,9 +145,11 @@ app.post("/insert", upload.none(), async (req, res) => {
         body: errors,
       });
     }
+    const qrCode = await QRCode.toDataURL(shortUrl);
     const customUrl = new Url({
       originalUrl: originalUrl,
       shortUrl: shortUrl,
+      qrCode: qrCode,
       user: userId,
     });
     const urlanatics = new UrlAnatics({
@@ -157,6 +160,9 @@ app.post("/insert", upload.none(), async (req, res) => {
     await urlanatics.save();
     res.status(200).json({
       success: true,
+      body: {
+        QRCode: qrCode,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -168,6 +174,38 @@ app.get("/check-session", (req, res) => {
     res.json({ authenticated: true });
   } else {
     res.json({ authenticated: false });
+  }
+});
+app.get("/info", async (req, res) => {
+  const userId = req.session.userId;
+  let info = [];
+  try {
+    const user = await User.findById(userId).exec();
+    const urls = await Url.find({ user: userId }).exec();
+    let dataAnatics = await UrlAnatics.find({ user: userId }).exec();
+    const analyticsMap = {};
+    dataAnatics.forEach((analytic) => {
+      analyticsMap[analytic.shortUrl] = analytic.views;
+    });
+
+    urls.forEach((url) => {
+      info.push({
+        username: user.username,
+        shortUrl: url.shortUrl,
+        qrCode: url.qrCode,
+        views: analyticsMap[url.shortUrl],
+      });
+    });
+    res.status(200).json({
+      success: true,
+      body: info,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      body: "Something went wrong while searching for account",
+    });
   }
 });
 app.get("/logout", (req, res) => {

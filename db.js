@@ -13,6 +13,7 @@ const urlSchema = new mongoose.Schema(
   {
     originalUrl: String,
     shortUrl: { type: String, unique: true, index: true },
+    qrCode: String,
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { collection: "urls" }
@@ -20,7 +21,7 @@ const urlSchema = new mongoose.Schema(
 
 const urlAnaticsSchema = new mongoose.Schema(
   {
-    shortUrl: {  type: mongoose.Schema.Types.String, unique: true,ref: "Url" },
+    shortUrl: { type: mongoose.Schema.Types.String, unique: true, ref: "Url" },
     views: { type: Number, default: 0 },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
@@ -31,7 +32,7 @@ const userSchema = new mongoose.Schema(
   {
     username: { type: String, required: true },
     email: { type: String, required: true },
-    password : { type: String, required: true}
+    password: { type: String, required: true },
   },
   { collection: "users" }
 );

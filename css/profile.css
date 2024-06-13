@@ -76,6 +76,7 @@ section {
   padding: 10px;
 }
 div.data {
+  position: relative;
   background: var(--card-bg);
   padding: 20px;
   border-radius: 10px;
@@ -112,11 +113,25 @@ a {
   text-decoration: underline;
 }
 .qr {
+  width: 50px;
+  height: 50px;
   background-color: var(--qr-bg);
-  flex: 1;
+  transition: 250ms ease-in-out;
+}
+.qr img {
+  width: 100%;
+  height: 100%;
+}
+.qr-img {
+  margin: auto;
+  display: flex;
+  border-radius: 10px;
+}
+.hidden {
+  display: none;
 }
 .qr:hover {
-  background-color: darkblue;
+  background-color: rgb(42, 230, 13);
 }
 div.info {
   font-size: 16px;

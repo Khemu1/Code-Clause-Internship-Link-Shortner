@@ -8,6 +8,7 @@ let icon = document.querySelector(".icon");
 let logoutp = document.querySelector(".logout");
 let form = document.querySelector("form");
 let customUrl = document.querySelector(".custom-url");
+let qrContainer = document.querySelector(".qr-containter");
 const urlPrefix = "/api";
 checkSession();
 
@@ -26,11 +27,10 @@ logoutp.addEventListener("click", (e) => {
   return;
 });
 
-
 customUrl.addEventListener("click", (e) => {
   resetHomeDisplayError();
 });
-form.addEventListener("submit", async(e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   let formData = new FormData(form);
   let errors;
@@ -39,7 +39,9 @@ form.addEventListener("submit", async(e) => {
     await validateUrl.validate(
       {
         shortUrl: shortUrl,
-      },{abortEarly: false});
+      },
+      { abortEarly: false }
+    );
   } catch (error) {
     errors = transformYupErrorsIntoObject(error);
   }
@@ -48,6 +50,8 @@ form.addEventListener("submit", async(e) => {
     HomedisplayError(errors);
     return;
   }
+  qrContainer.classList.add("hidden");
+
   insertUrl(formData);
 });
 function checkSession() {
@@ -112,7 +116,10 @@ function insertUrl(formData) {
         return;
       }
       customUrl.classList.add("valid");
-      console.log(data);
+      let qr = data.body.QRCode;
+      let qrImg = document.querySelector("#qr-img");
+      qrImg.src = qr;
+      qrContainer.classList.remove("hidden");
     })
     .catch((error) => {
       console.error("Error:", error);
