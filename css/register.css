@@ -54,37 +54,25 @@ input[type="text"],
 input[type="password"] {
   background-color: transparent;
   border: none;
-  border-radius: 10px;
   height: 33px;
   color: white;
+  border-bottom: 1px solid #059eff;
 }
-form .email::after,
-form .username::after,
-form .password::after {
-  content: "";
-  position: absolute;
-  width: calc(100% - 110px);
-  height: 1px;
-  background-color: white;
-  bottom: 7px;
-  right: 0;
-}
-form .red-field::after,
-form .red-field::after,
-form .red-field::after {
-  content: "";
-  position: absolute;
-  width: calc(100% - 110px);
-  height: 1px;
-  background-color: red;
-  bottom: 7px;
-  right: 0;
+
+form .red-field {
+  border-bottom: 1px solid red;
 }
 input[type="email"]:focus-within,
 input[type="text"]:focus-within,
 input[type="password"]:focus-within {
   outline: none;
 }
+input[type="email"]:autofill,
+input[type="text"]:autofill,
+input[type="password"]:autofill {
+  background-color: transparent !important;
+}
+
 button {
   font-size: 20px;
   background-color: var(--button);
@@ -109,13 +97,13 @@ a {
   width: 64%;
 }
 .username-error {
-  bottom: calc(0% - 17px);
+  bottom: calc(0% - 25px);
 }
 .email-error {
-  bottom: calc(0% - 6px);
+  bottom: calc(0% - 13.5px);
 }
 .password-error {
-  bottom: calc(0% - 17px);
+  bottom: calc(0% - 26px);
 }
 .hide {
   display: none;

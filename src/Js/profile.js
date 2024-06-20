@@ -1,8 +1,8 @@
+const urlPrefix = "/api";
 checkSession();
 getInfo();
 let icon = document.querySelector(".icon");
 let logoutp = document.querySelector(".logout");
-const urlPrefix = "/api";
 
 icon.addEventListener("click", (e) => {
   let menu = document.querySelector(".menu");

@@ -4,6 +4,7 @@ import {
   validateUrl,
   transformYupErrorsIntoObject,
 } from "./utils.js";
+const urlPrefix = "/api";
 checkSession();
 getName();
 let icon = document.querySelector(".icon");
@@ -11,7 +12,6 @@ let logoutp = document.querySelector(".logout");
 let form = document.querySelector("form");
 let customUrl = document.querySelector(".custom-url");
 let qrContainer = document.querySelector(".qr-containter");
-const urlPrefix = "/api";
 
 icon.addEventListener("click", (e) => {
   let menu = document.querySelector(".menu");

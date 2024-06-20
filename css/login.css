@@ -68,14 +68,13 @@ form .password::after {
   bottom: 7px;
   right: 0;
 }
-form .red-field::after,
 form .red-field::after {
   content: "";
   position: absolute;
   width: calc(100% - 110px);
   height: 1px;
   background-color: red;
-  bottom: 7px;
+  bottom: 8px;
   right: 0;
 }
 input[type="text"],
