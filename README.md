@@ -13,7 +13,7 @@ Before you begin, ensure you have met the following requirements:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/link-shortener.git
+    git clone https://github.com/Khemu1/link-shortener.git
     cd link-shortener
     ```
 
