@@ -69,12 +69,13 @@ function checkSession() {
     })
     .then((data) => {
       if (!data.authenticated) {
-        window.location.href = "http://localhost:5173/pages/login.html";
+        console.error("session is not authenticated");
+        window.location.href = `${urlPrefix}/login`;
       }
     })
     .catch((error) => {
       console.log("Error", error);
-      window.location.href = "http://localhost:5173/pages/login.html";
+      window.location.href = `${urlPrefix}/login`;
     });
 }
 
@@ -88,14 +89,14 @@ function logout() {
     })
     .then((data) => {
       if (data.success) {
-        window.location.href = "/login.html";
+        window.location.href = `${urlPrefix}/login`;
       } else {
         throw new Error("Error terminating the session");
       }
     })
     .catch((error) => {
       console.log("Error", error);
-      window.location.href = "/login.html";
+      window.location.href = `${urlPrefix}/login`;
     });
 }
 function insertUrl(formData) {

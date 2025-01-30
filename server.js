@@ -1,12 +1,13 @@
 import express from "express";
 import { connectDB, UrlAnatics, Url, User } from "./db.js";
-import { fileURLToPath } from "url";
-import path from "path";
-import { dirname } from "path";
 import multer from "multer";
 import session from "express-session";
 import QRCode from "qrcode";
+import path from "path";
+import { fileURLToPath } from "url";
 const app = express();
+const port = process.env.PORT || 3000;
+
 app.use(
   session({
     secret: "secret-key",
@@ -15,87 +16,80 @@ app.use(
     cookie: { secure: false },
   })
 );
-const checkSession = (req, res, next) => {
-  if (req.session && req.session.userId) {
-    next();
-    return;
-  }
-  res.redirect("./login");
-};
-const port = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "public")));
-
-connectDB();
-
 app.use(express.json());
 const upload = multer();
 
+connectDB();
+
+app.get("/login", (req, res) => {
+  console.log("login file requested");
+  res.sendFile(path.join(__dirname, "public/pages/login.html"));
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/index.html"));
+});
+
+app.get("/home", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/home.html"));
+});
+app.get("/profile", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/profile.html"));
+});
+
 app.post("/register", upload.none(), async (req, res) => {
-  if (!req.body)
+  if (!req.body) {
     return res.status(400).send({
       success: false,
       body: "You must provide a body to this request",
     });
+  }
   try {
     const { email, username, password } = req.body;
-    const user = new User({
-      email,
-      username,
-      password,
-    });
+    const user = new User({ email, username, password });
     await user.save();
-    let userId = await User.find({ email, username });
+    const userId = await User.find({ email, username });
     req.session.userId = userId;
-    return res.status(201).send({
-      success: true,
-    });
+    res.status(201).send({ success: true });
   } catch (error) {
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       body: "Something went wrong while inserting",
     });
   }
 });
+
 app.get("/name", async (req, res) => {
   try {
     const userId = req.session.userId;
     if (!userId) {
       return res.status(400).send({
         success: false,
-        body: {
-          error: "User ID not found in session",
-        },
+        body: { error: "User ID not found in session" },
       });
     }
 
-    let account = await User.findById(userId).exec();
-
+    const account = await User.findById(userId).exec();
     if (!account) {
       return res.status(404).send({
         success: false,
-        body: {
-          error: "User not found",
-        },
+        body: { error: "User not found" },
       });
     }
 
-    return res.status(200).send({
+    res.status(200).send({
       success: true,
-      body: {
-        username: account.username,
-      },
+      body: { username: account.username },
     });
   } catch (error) {
     console.error("Error in /name route:", error);
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
-      body: {
-        error: "Internal server error",
-      },
+      body: { error: "Internal server error" },
     });
   }
 });
@@ -103,16 +97,13 @@ app.get("/name", async (req, res) => {
 app.post("/get", async (req, res) => {
   try {
     const { username, email } = req.body;
-
     const usersByUsername = await User.find({ username }).exec();
     const usersByEmail = await User.find({ email }).exec();
-
     let errors = {};
 
     if (usersByUsername.length > 0) {
       errors.username = "Already used username";
     }
-
     if (usersByEmail.length > 0) {
       errors.email = "Already used email";
     }
@@ -124,11 +115,9 @@ app.post("/get", async (req, res) => {
       });
     }
 
-    return res.status(200).send({
+    res.status(200).send({
       success: true,
-      body: {
-        shortUrl: "All Valid",
-      },
+      body: { shortUrl: "All Valid" },
     });
   } catch (error) {
     console.error("Error:", error);
@@ -137,47 +126,48 @@ app.post("/get", async (req, res) => {
 });
 
 app.post("/login", upload.none(), async (req, res) => {
-  if (!req.body)
+  if (!req.body) {
     return res.status(400).send({
       success: false,
       body: "You must provide a body to this request",
     });
+  }
+
   try {
     const { password, email } = req.body;
+    console.log(email, password);
     const user = await User.find({ email: email, password: password }).exec();
+
     if (user.length == 0) {
       return res.status(200).send({
         success: false,
-        body: {
-          error: "Invalid Account",
-        },
+        body: { error: "Invalid Account" },
       });
     }
+
     const id = user[0]._id.toString();
     req.session.userId = id;
-    return res.status(200).send({
-      success: true,
-    });
+    res.status(200).send({ success: true });
   } catch (error) {
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       body: "Something went wrong while searching for account",
     });
   }
 });
+
 app.post("/insert", upload.none(), async (req, res) => {
   try {
     const { originalUrl, shortUrl } = req.body;
     const userId = req.session.userId;
     let find = await Url.find({ shortUrl: shortUrl }).exec();
     if (find.length > 0) {
-      let errors = {};
-      errors.message = "This Custom URL Is Already Taken";
       return res.status(200).json({
         success: false,
-        body: errors,
+        body: { message: "This Custom URL Is Already Taken" },
       });
     }
+
     const qrCode = await QRCode.toDataURL(
       `http://localhost:${port}/link/${shortUrl}`
     );
@@ -191,8 +181,10 @@ app.post("/insert", upload.none(), async (req, res) => {
       shortUrl: shortUrl,
       user: userId,
     });
+
     await customUrl.save();
     await urlanatics.save();
+
     res.status(200).json({
       success: true,
       body: {
@@ -205,6 +197,7 @@ app.post("/insert", upload.none(), async (req, res) => {
     res.status(500).json({ error: "An error occurred while saving the URL" });
   }
 });
+
 app.get("/check-session", (req, res) => {
   if (req.session && req.session.userId) {
     res.json({ authenticated: true });
@@ -212,14 +205,17 @@ app.get("/check-session", (req, res) => {
     res.json({ authenticated: false });
   }
 });
+
 app.get("/info", async (req, res) => {
   const userId = req.session.userId;
   let info = [];
+
   try {
     const user = await User.findById(userId).exec();
     const urls = await Url.find({ user: userId }).exec();
     let dataAnatics = await UrlAnatics.find({ user: userId }).exec();
     const analyticsMap = {};
+
     dataAnatics.forEach((analytic) => {
       analyticsMap[analytic.shortUrl] = analytic.views;
     });
@@ -233,12 +229,10 @@ app.get("/info", async (req, res) => {
         views: analyticsMap[url.shortUrl],
       });
     });
-    res.status(200).json({
-      success: true,
-      body: info,
-    });
+
+    res.status(200).json({ success: true, body: info });
   } catch (error) {
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       body: "Something went wrong while searching for account",
     });
@@ -285,5 +279,5 @@ app.get("/logout", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`running http://localhost:${port}`);
+  console.log(`Running at http://localhost:${port}`);
 });

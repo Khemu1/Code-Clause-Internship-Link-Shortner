@@ -47,25 +47,28 @@ function retrieve(email, password) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-    }),
+    body: JSON.stringify({ email, password }),
   })
     .then((response) => {
       if (!response.ok) {
         throw new Error("HTTP error, status = " + response.status);
       }
-      return response.json(); // Parse the JSON response
+      return response.json();
     })
     .then((data) => {
       if (data.success) {
-        window.location.href = "http://localhost:5173/pages/home.html";
-        return;
+        console.log(data);
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
+        window.location.pathname = `${urlPrefix}/home`;
+      } else {
+        displayError(data.body || "Login failed.");
       }
-      displayError(data.body);
     })
     .catch((error) => {
       console.error("Error:", error);
+      displayError("Something went wrong. Please try again.");
     });
 }
